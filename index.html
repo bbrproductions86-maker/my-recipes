@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Recipes</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --border: #2a2e3a;
+    --text: #e6e6e6;
+    --muted: #8b8f9a;
+    --green: #3dd68c;
+    --accent: #7aa2f7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px;
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+  }
+  h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; }
+  .sub { color: var(--muted); margin-bottom: 20px; font-size: 13px; }
+  .controls {
+    display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;
+  }
+  input, select {
+    background: var(--card); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 12px; border-radius: 6px; font-size: 13px;
+  }
+  input { width: 280px; }
+  table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    background: var(--card); border-radius: 8px;
+  }
+  thead th {
+    text-align: left; padding: 10px 12px; background: #222633;
+    color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.4px; cursor: pointer; user-select: none;
+    position: sticky; top: 0; z-index: 10;
+    box-shadow: 0 1px 0 var(--border);
+  }
+  th:hover { color: var(--text); }
+  td { padding: 9px 12px; border-top: 1px solid var(--border); }
+  .name { font-weight: 500; }
+  .recipe-link { color: var(--accent); text-decoration: none; }
+  .recipe-link:hover { text-decoration: underline; }
+  .prof { color: var(--muted); font-size: 12px; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .stats { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat {
+    background: var(--card); padding: 10px 16px; border-radius: 8px;
+    border: 1px solid var(--border); min-width: 100px;
+  }
+  .stat b { display: block; font-size: 18px; }
+  .stat span { color: var(--muted); font-size: 12px; }
+  .muted { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+  <h1>My Known Recipes</h1>
+  <div class="sub">Updated 2026-11-25 14:57 · 273 recipes across 5 professions</div>
+
+  <div class="stats">
+    <div class="stat"><b>142</b><span>Enchanting</span></div><div class="stat"><b>107</b><span>Tailoring</span></div><div class="stat"><b>20</b><span>Cooking</span></div><div class="stat"><b>2</b><span>Fishing</span></div><div class="stat"><b>2</b><span>First Aid</span></div>
+  </div>
+
+  <div class="controls">
+    <input id="search" placeholder="Search recipe name…" oninput="filter()">
+    <select id="prof" onchange="filter()">
+      <option value="">All professions</option>
+      <option>Cooking</option><option>Enchanting</option><option>First Aid</option><option>Fishing</option><option>Tailoring</option>
+    </select>
+  </div>
+
+  <table id="tbl">
+    <thead>
+      <tr>
+        <th onclick="sortCol(0)">Recipe</th>
+        <th onclick="sortCol(1)">Profession</th>
+        <th onclick="sortCol(2)">Materials</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr data-prof="Cooking" data-name="basic campfire" data-mats="{&quot;Simple Wood&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Basic Campfire</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="boiled clams" data-mats="{&quot;Clam Meat&quot;: 1, &quot;Refreshing Spring Water&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Boiled Clams</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="charred wolf meat" data-mats="{&quot;Stringy Wolf Meat&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Charred Wolf Meat</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="coyote steak" data-mats="{&quot;Coyote Meat&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Coyote Steak</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="crab cake" data-mats="{&quot;Crawler Meat&quot;: 1, &quot;Mild Spices&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Crab Cake</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="herb baked egg" data-mats="{&quot;Mild Spices&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Herb Baked Egg</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="roasted boar meat" data-mats="{&quot;Chunk of Boar Meat&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Roasted Boar Meat</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="slitherskin mackerel" data-mats="{&quot;Raw Slitherskin Mackerel&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Slitherskin Mackerel</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="spiced wolf meat" data-mats="{&quot;Mild Spices&quot;: 1, &quot;Stringy Wolf Meat&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Spiced Wolf Meat</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="tasty raptor bites" data-mats="{&quot;Mild Spices&quot;: 4, &quot;Raptor Egg&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Tasty Raptor Bites</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Soul Dust&quot;: 1, &quot;Large Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Soul Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Small Glowing Shard&quot;: 1, &quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Simple Wood&quot;: 1, &quot;Lesser Magic Essence&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Small Radiant Shard&quot;: 1, &quot;Aquamarine&quot;: 1, &quot;Lesser Nether Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Crawler Meat&quot;: 1, &quot;Mild Spices&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Large Fang&quot;: 1, &quot;Small Glowing Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Cooking" data-name="materials" data-mats="{&quot;Greater Astral Essence&quot;: 1, &quot;Iridescent Pearl&quot;: 1, &quot;Golden Rod&quot;: 1, &quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Cooking</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="dust to motes" data-mats="{&quot;Strange Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Dust to Motes</a> <span class='muted'>(×3)</span></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant 2h weapon - impact" data-mats="{&quot;Vision Dust&quot;: 2, &quot;Large Glowing Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant 2H Weapon - Impact</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant 2h weapon - lesser impact" data-mats="{&quot;Soul Dust&quot;: 1, &quot;Large Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant 2H Weapon - Lesser Impact</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant 2h weapon - minor impact" data-mats="{&quot;Strange Dust&quot;: 1, &quot;Small Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant 2H Weapon - Minor Impact</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant boots - lesser agility" data-mats="{&quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Boots - Lesser Agility</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant boots - lesser stamina" data-mats="{&quot;Soul Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Boots - Lesser Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant boots - minor agility" data-mats="{&quot;Strange Dust&quot;: 3, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Boots - Minor Agility</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant boots - minor speed" data-mats="{&quot;Small Radiant Shard&quot;: 1, &quot;Aquamarine&quot;: 1, &quot;Lesser Nether Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Boots - Minor Speed</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant boots - minor stamina" data-mats="{&quot;Strange Dust&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Boots - Minor Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant boots - stamina" data-mats="{&quot;Vision Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Boots - Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - inferior stamina" data-mats="{&quot;Mote of Magic&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Inferior Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - intellect" data-mats="{&quot;Lesser Nether Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Intellect</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - lesser intellect" data-mats="{&quot;Greater Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Lesser Intellect</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - lesser stamina" data-mats="{&quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Lesser Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - minor agility" data-mats="{&quot;Strange Dust&quot;: 1, &quot;Lesser Magic Essence&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Minor Agility</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - minor deflect" data-mats="{&quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Minor Deflect</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - minor stamina" data-mats="{&quot;Strange Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Minor Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - spirit" data-mats="{&quot;Lesser Mystic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Spirit</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - stamina" data-mats="{&quot;Soul Dust&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant bracer - strength" data-mats="{&quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Bracer - Strength</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - greater intellect" data-mats="{&quot;Lesser Mystic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Greater Intellect</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - greater stamina" data-mats="{&quot;Soul Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Greater Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - inferior stamina" data-mats="{&quot;Strange Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Inferior Stamina</a> <span class='muted'>(×2)</span></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - intellect" data-mats="{&quot;Greater Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Intellect</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - lesser absorption" data-mats="{&quot;Large Glimmering Shard&quot;: 1, &quot;Strange Dust&quot;: 1, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Lesser Absorption</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - lesser stamina" data-mats="{&quot;Strange Dust&quot;: 1, &quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Lesser Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - lesser stats" data-mats="{&quot;Vision Dust&quot;: 1, &quot;Greater Mystic Essence&quot;: 1, &quot;Large Glowing Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Lesser Stats</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - minor absorption" data-mats="{&quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Minor Absorption</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - minor intellect" data-mats="{&quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Minor Intellect</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - minor stats" data-mats="{&quot;Large Glimmering Shard&quot;: 1, &quot;Lesser Astral Essence&quot;: 1, &quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Minor Stats</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - stamina" data-mats="{&quot;Strange Dust&quot;: 2, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant chest - superior stamina" data-mats="{&quot;Vision Dust&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Chest - Superior Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant cloak - defense" data-mats="{&quot;Small Glowing Shard&quot;: 1, &quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Cloak - Defense</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant cloak - fire resistance" data-mats="{&quot;Lesser Mystic Essence&quot;: 1, &quot;Elemental Fire&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Cloak - Fire Resistance</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant cloak - greater defense" data-mats="{&quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Cloak - Greater Defense</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant cloak - lesser fire resistance" data-mats="{&quot;Fire Oil&quot;: 1, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Cloak - Lesser Fire Resistance</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant cloak - lesser protection" data-mats="{&quot;Strange Dust&quot;: 3, &quot;Small Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Cloak - Lesser Protection</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant cloak - minor protection" data-mats="{&quot;Strange Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Cloak - Minor Protection</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant cloak - minor resistance" data-mats="{&quot;Strange Dust&quot;: 1, &quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Cloak - Minor Resistance</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant cloak - resistance" data-mats="{&quot;Lesser Nether Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Cloak - Resistance</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant gloves - advanced herbalism" data-mats="{&quot;Vision Dust&quot;: 2, &quot;Sungrass&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Gloves - Advanced Herbalism</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant gloves - advanced mining" data-mats="{&quot;Vision Dust&quot;: 2, &quot;Truesilver Bar&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Gloves - Advanced Mining</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant gloves - agility" data-mats="{&quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Gloves - Agility</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant gloves - fishing" data-mats="{&quot;Soul Dust&quot;: 1, &quot;Blackmouth Oil&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Gloves - Fishing</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant gloves - strength" data-mats="{&quot;Vision Dust&quot;: 2, &quot;Lesser Nether Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Gloves - Strength</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant necklace - healing power" data-mats="{&quot;Rosecap&quot;: 4, &quot;Large Radiant Shard&quot;: 5, &quot;Pyrite&quot;: 4, &quot;Greater Nether Essence&quot;: 3, &quot;Dream Dust&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Necklace - Healing Power</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant necklace - spell power" data-mats="{&quot;Cerulean Dye&quot;: 4, &quot;Magenta Dye&quot;: 4, &quot;Large Radiant Shard&quot;: 3, &quot;Dream Dust&quot;: 8, &quot;Greater Nether Essence&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Necklace - Spell Power</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant necklace - strength" data-mats="{&quot;Bauxite&quot;: 4, &quot;Large Radiant Shard&quot;: 4, &quot;Sulfuric Acid&quot;: 4, &quot;Greater Nether Essence&quot;: 4, &quot;Dream Dust&quot;: 10}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Necklace - Strength</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant shield - lesser spirit" data-mats="{&quot;Strange Dust&quot;: 2, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Shield - Lesser Spirit</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant shield - lesser stamina" data-mats="{&quot;Lesser Mystic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Shield - Lesser Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant shield - minor stamina" data-mats="{&quot;Strange Dust&quot;: 1, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Shield - Minor Stamina</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant shield - spirit" data-mats="{&quot;Lesser Mystic Essence&quot;: 1, &quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Shield - Spirit</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant weapon - demonslaying" data-mats="{&quot;Dream Dust&quot;: 1, &quot;Small Radiant Shard&quot;: 1, &quot;Potion of Demon Slaying&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Weapon - Demonslaying</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant weapon - insight" data-mats="{&quot;Greater Astral Essence&quot;: 4, &quot;Large Glimmering Shard&quot;: 4, &quot;Strange Dust&quot;: 10, &quot;Frilled Lichen&quot;: 4, &quot;Pyrite&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Weapon - Insight</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant weapon - lesser beastslayer" data-mats="{&quot;Large Fang&quot;: 1, &quot;Small Glowing Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Weapon - Lesser Beastslayer</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant weapon - lesser striking" data-mats="{&quot;Soul Dust&quot;: 1, &quot;Large Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Weapon - Lesser Striking</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant weapon - minor striking" data-mats="{&quot;Lesser Magic Essence&quot;: 1, &quot;Strange Dust&quot;: 1, &quot;Small Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Weapon - Minor Striking</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant weapon - recovery" data-mats="{&quot;Greater Astral Essence&quot;: 6, &quot;Large Glimmering Shard&quot;: 4, &quot;Soul Dust&quot;: 6, &quot;Pyrite&quot;: 4, &quot;Silver Ore&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Weapon - Recovery</a> <span class='muted'>(×10)</span></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant weapon - revelation" data-mats="{&quot;Cerulean Dye&quot;: 4, &quot;Large Glimmering Shard&quot;: 6, &quot;Soul Dust&quot;: 8, &quot;Sulfuric Acid&quot;: 4, &quot;Greater Astral Essence&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Weapon - Revelation</a> <span class='muted'>(×10)</span></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchant weapon - striking" data-mats="{&quot;Greater Mystic Essence&quot;: 1, &quot;Large Glowing Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchant Weapon - Striking</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="enchanted lute" data-mats="{&quot;Simple Wood&quot;: 1, &quot;Strange Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchanted Lute</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="greater magic wand" data-mats="{&quot;Simple Wood&quot;: 1, &quot;Lesser Magic Essence&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Greater Magic Wand</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="greater mystic wand" data-mats="{&quot;Vision Dust&quot;: 1, &quot;Lesser Mystic Essence&quot;: 1, &quot;Star Wood&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Greater Mystic Wand</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="lesser magic wand" data-mats="{&quot;Simple Wood&quot;: 1, &quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Lesser Magic Wand</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="lesser mystic wand" data-mats="{&quot;Star Wood&quot;: 1, &quot;Lesser Mystic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Lesser Mystic Wand</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="minor wizard oil" data-mats="{&quot;Empty Vial&quot;: 1, &quot;Maple Seed&quot;: 1, &quot;Strange Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Minor Wizard Oil</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="novice&#x27;s practice wand" data-mats="{&quot;Simple Wood&quot;: 1, &quot;Mote of Magic&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Novice&#x27;s Practice Wand</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="runed copper rod" data-mats="{&quot;Mote of Magic&quot;: 1, &quot;Copper Rod&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Runed Copper Rod</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="runed golden rod" data-mats="{&quot;Greater Astral Essence&quot;: 1, &quot;Iridescent Pearl&quot;: 1, &quot;Golden Rod&quot;: 1, &quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Runed Golden Rod</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="runed silver rod" data-mats="{&quot;Shadowgem&quot;: 1, &quot;Silver Rod&quot;: 1, &quot;Strange Dust&quot;: 3, &quot;Lesser Magic Essence&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Runed Silver Rod</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="runed truesilver rod" data-mats="{&quot;Black Pearl&quot;: 1, &quot;Greater Mystic Essence&quot;: 1, &quot;Truesilver Rod&quot;: 1, &quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Runed Truesilver Rod</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Greater Mystic Essence&quot;: 1, &quot;Large Glowing Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Large Glimmering Shard&quot;: 1, &quot;Strange Dust&quot;: 1, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 2, &quot;Large Glowing Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Medium Leather&quot;: 4, &quot;Iridescent Pearl&quot;: 1, &quot;Spider&#x27;s Silk&quot;: 4, &quot;Bolt of Silk Cloth&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Mageweave&quot;: 2, &quot;Silken Thread&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Empty Vial&quot;: 1, &quot;Raw Brilliant Smallfish&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Wool Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Greater Eternal Essence&quot;: 2, &quot;Rune Thread&quot;: 2, &quot;Bolt of Runecloth&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a> <span class='muted'>(×10)</span></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Soul Dust&quot;: 1, &quot;Blackmouth Oil&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 4, &quot;Light Leather&quot;: 2, &quot;Fine Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Raw Slitherskin Mackerel&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bauxite&quot;: 4, &quot;Large Radiant Shard&quot;: 4, &quot;Sulfuric Acid&quot;: 4, &quot;Greater Nether Essence&quot;: 4, &quot;Dream Dust&quot;: 10}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Fine Thread&quot;: 2, &quot;Small Lustrous Pearl&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Mageweave&quot;: 2, &quot;Silken Thread&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 2, &quot;Lesser Nether Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 1, &quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 8, &quot;Cerulean Dye&quot;: 2, &quot;Fine Thread&quot;: 4, &quot;Small Lustrous Pearl&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Lesser Mystic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Greater Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 3, &quot;Small Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Red Dye&quot;: 2, &quot;Coarse Thread&quot;: 2, &quot;Bolt of Linen Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Fine Thread&quot;: 1, &quot;Cerulean Dye&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 5, &quot;Red Dye&quot;: 3, &quot;Fine Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Greater Astral Essence&quot;: 4, &quot;Large Glimmering Shard&quot;: 4, &quot;Strange Dust&quot;: 10, &quot;Frilled Lichen&quot;: 4, &quot;Pyrite&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Iron Buckle&quot;: 1, &quot;Thick Spider&#x27;s Silk&quot;: 2, &quot;Bolt of Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 1, &quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Cerulean Dye&quot;: 2, &quot;Magenta Dye&quot;: 4, &quot;Bolt of Runecloth&quot;: 5, &quot;Rune Thread&quot;: 1, &quot;Rugged Leather&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Stringy Wolf Meat&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Lesser Nether Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 5, &quot;Fine Thread&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Greater Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Mild Spices&quot;: 1, &quot;Stringy Wolf Meat&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Mote of Magic&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Simple Wood&quot;: 1, &quot;Strange Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Simple Wood&quot;: 1, &quot;Mote of Magic&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Fine Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Fire Oil&quot;: 1, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Red Dye&quot;: 2, &quot;Silken Thread&quot;: 2, &quot;Bolt of Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 1, &quot;Greater Mystic Essence&quot;: 1, &quot;Large Glowing Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Black Pearl&quot;: 1, &quot;Greater Mystic Essence&quot;: 1, &quot;Truesilver Rod&quot;: 1, &quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Mild Spices&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Empty Vial&quot;: 1, &quot;Maple Seed&quot;: 1, &quot;Strange Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Linen Cloth&quot;: 1, &quot;Coarse Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Lesser Mystic Essence&quot;: 1, &quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a> <span class='muted'>(×2)</span></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 2, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Lesser Nether Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Fine Thread&quot;: 2, &quot;Bolt of Linen Cloth&quot;: 12, &quot;Minor Healing Potion&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Red Dye&quot;: 2, &quot;Fine Thread&quot;: 2, &quot;Bolt of Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Mote of Magic&quot;: 1, &quot;Copper Rod&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Mageweave&quot;: 2, &quot;Shadow Silk&quot;: 8, &quot;Heavy Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Cerulean Dye&quot;: 4, &quot;Magenta Dye&quot;: 6, &quot;Large Radiant Shard&quot;: 12, &quot;Heavy Silken Thread&quot;: 4, &quot;Bolt of Mageweave&quot;: 28}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Coyote Meat&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Black Dye&quot;: 1, &quot;Fine Thread&quot;: 4, &quot;Bolt of Silk Cloth&quot;: 6}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Mageweave&quot;: 5, &quot;Red Dye&quot;: 2, &quot;Heavy Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 1, &quot;Lesser Mystic Essence&quot;: 1, &quot;Star Wood&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Lesser Mystic Essence&quot;: 1, &quot;Elemental Fire&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Lesser Mystic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Star Wood&quot;: 1, &quot;Lesser Mystic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Soul Dust&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Runecloth&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Mageweave&quot;: 5, &quot;Shadow Silk&quot;: 5, &quot;Heavy Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a> <span class='muted'>(×3)</span></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Clam Meat&quot;: 1, &quot;Refreshing Spring Water&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 2, &quot;Sungrass&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Mageweave&quot;: 3, &quot;Silken Thread&quot;: 2, &quot;Thick Spider&#x27;s Silk&quot;: 2, &quot;Frost Oil&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Greater Astral Essence&quot;: 6, &quot;Large Glimmering Shard&quot;: 4, &quot;Soul Dust&quot;: 6, &quot;Pyrite&quot;: 4, &quot;Silver Ore&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Enchanting" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 1, &quot;Fine Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a> <span class='muted'>(×10)</span></td>
+          <td class="prof">Enchanting</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="First Aid" data-name="linen bandage" data-mats="{&quot;Linen Cloth&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Linen Bandage</a></td>
+          <td class="prof">First Aid</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="First Aid" data-name="materials" data-mats="{&quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">First Aid</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Fishing" data-name="fish bowl" data-mats="{&quot;Empty Vial&quot;: 1, &quot;Raw Brilliant Smallfish&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Fish Bowl</a></td>
+          <td class="prof">Fishing</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Fishing" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 3, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Fishing</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="azure silk pants" data-mats="{&quot;Blue Dye&quot;: 2, &quot;Fine Thread&quot;: 3, &quot;Bolt of Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Azure Silk Pants</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="black mageweave gloves" data-mats="{&quot;Bolt of Mageweave&quot;: 2, &quot;Heavy Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Black Mageweave Gloves</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="black mageweave leggings" data-mats="{&quot;Bolt of Mageweave&quot;: 2, &quot;Silken Thread&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Black Mageweave Leggings</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="black mageweave vest" data-mats="{&quot;Bolt of Mageweave&quot;: 2, &quot;Silken Thread&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Black Mageweave Vest</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="black silk pack" data-mats="{&quot;Black Dye&quot;: 1, &quot;Fine Thread&quot;: 4, &quot;Bolt of Silk Cloth&quot;: 6}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Black Silk Pack</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="bolt of linen cloth" data-mats="{&quot;Linen Cloth&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Bolt of Linen Cloth</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="bolt of mageweave" data-mats="{&quot;Mageweave Cloth&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Bolt of Mageweave</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="bolt of runecloth" data-mats="{&quot;Runecloth&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Bolt of Runecloth</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="bolt of silk cloth" data-mats="{&quot;Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Bolt of Silk Cloth</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="bolt of woolen cloth" data-mats="{&quot;Wool Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Bolt of Woolen Cloth</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="brown linen shirt" data-mats="{&quot;Bolt of Linen Cloth&quot;: 1, &quot;Coarse Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Brown Linen Shirt</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="colorful kilt" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 5, &quot;Red Dye&quot;: 3, &quot;Fine Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Colorful Kilt</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="crimson silk pantaloons" data-mats="{&quot;Red Dye&quot;: 2, &quot;Silken Thread&quot;: 2, &quot;Bolt of Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Crimson Silk Pantaloons</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="crimson silk vest" data-mats="{&quot;Red Dye&quot;: 2, &quot;Fine Thread&quot;: 2, &quot;Bolt of Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Crimson Silk Vest</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="double-stitched woolen shoulders" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Fine Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Double-stitched Woolen Shoulders</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="enchanted mageweave pouch" data-mats="{&quot;Vision Dust&quot;: 4, &quot;Heavy Silken Thread&quot;: 2, &quot;Bolt of Mageweave&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchanted Mageweave Pouch</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="enchanted runecloth bag" data-mats="{&quot;Greater Eternal Essence&quot;: 2, &quot;Rune Thread&quot;: 2, &quot;Bolt of Runecloth&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Enchanted Runecloth Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="faction banner" data-mats="{&quot;Bolt of Linen Cloth&quot;: 1, &quot;Coarse Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Faction Banner</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="filigreed pearly gown" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 8, &quot;Cerulean Dye&quot;: 2, &quot;Fine Thread&quot;: 4, &quot;Small Lustrous Pearl&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Filigreed Pearly Gown</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="filigreed pristine leggings" data-mats="{&quot;Cerulean Dye&quot;: 2, &quot;Bolt of Silk Cloth&quot;: 8, &quot;Fine Thread&quot;: 4, &quot;Pristine Leather&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Filigreed Pristine Leggings</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="green linen bracers" data-mats="{&quot;Bolt of Linen Cloth&quot;: 3, &quot;Green Dye&quot;: 1, &quot;Coarse Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Green Linen Bracers</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="green silken shoulders" data-mats="{&quot;Bolt of Silk Cloth&quot;: 5, &quot;Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Green Silken Shoulders</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="heavy woolen pants" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 5, &quot;Fine Thread&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Heavy Woolen Pants</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="icy cloak" data-mats="{&quot;Bolt of Mageweave&quot;: 3, &quot;Silken Thread&quot;: 2, &quot;Thick Spider&#x27;s Silk&quot;: 2, &quot;Frost Oil&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Icy Cloak</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="linen bag" data-mats="{&quot;Bolt of Linen Cloth&quot;: 3, &quot;Coarse Thread&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Linen Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="linen cloak" data-mats="{&quot;Bolt of Linen Cloth&quot;: 1, &quot;Coarse Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Linen Cloak</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="mageweave bag" data-mats="{&quot;Bolt of Mageweave&quot;: 4, &quot;Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Mageweave Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="mageweave reagent bag" data-mats="{&quot;Bolt of Mageweave&quot;: 4, &quot;Magenta Dye&quot;: 1, &quot;Heavy Silken Thread&quot;: 2, &quot;Cerulean Dye&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Mageweave Reagent Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="mooncloth" data-mats="{&quot;Felcloth&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Mooncloth</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="novice arcanist&#x27;s sash" data-mats="{&quot;Bolt of Linen Cloth&quot;: 8, &quot;Minor Mana Potion&quot;: 2, &quot;Fine Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Novice Arcanist&#x27;s Sash</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="novice ardent&#x27;s sash" data-mats="{&quot;Fine Thread&quot;: 2, &quot;Bolt of Linen Cloth&quot;: 12, &quot;Minor Healing Potion&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Novice Ardent&#x27;s Sash</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="pearl-clasped cloak" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Fine Thread&quot;: 2, &quot;Small Lustrous Pearl&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Pearl-clasped Cloak</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="radiant cord" data-mats="{&quot;Cerulean Dye&quot;: 4, &quot;Magenta Dye&quot;: 6, &quot;Large Radiant Shard&quot;: 12, &quot;Heavy Silken Thread&quot;: 4, &quot;Bolt of Mageweave&quot;: 28}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Radiant Cord</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="red linen bag" data-mats="{&quot;Red Dye&quot;: 1, &quot;Fine Thread&quot;: 1, &quot;Bolt of Linen Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Red Linen Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="red linen robe" data-mats="{&quot;Red Dye&quot;: 2, &quot;Coarse Thread&quot;: 2, &quot;Bolt of Linen Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Red Linen Robe</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="red linen vest" data-mats="{&quot;Red Dye&quot;: 1, &quot;Coarse Thread&quot;: 1, &quot;Bolt of Linen Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Red Linen Vest</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="red mageweave bag" data-mats="{&quot;Bolt of Mageweave&quot;: 5, &quot;Red Dye&quot;: 2, &quot;Heavy Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Red Mageweave Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="red woolen boots" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 4, &quot;Light Leather&quot;: 2, &quot;Fine Thread&quot;: 1, &quot;Red Dye&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Red Woolen Boots</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="reinforced linen cape" data-mats="{&quot;Bolt of Linen Cloth&quot;: 2, &quot;Coarse Thread&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Reinforced Linen Cape</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="runecloth bag" data-mats="{&quot;Cerulean Dye&quot;: 2, &quot;Magenta Dye&quot;: 4, &quot;Bolt of Runecloth&quot;: 5, &quot;Rune Thread&quot;: 1, &quot;Rugged Leather&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Runecloth Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="runecloth reagent bag" data-mats="{&quot;Rugged Leather&quot;: 2, &quot;Viridian Dye&quot;: 1, &quot;Rune Thread&quot;: 1, &quot;Bolt of Runecloth&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Runecloth Reagent Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="shadoweave gloves" data-mats="{&quot;Bolt of Mageweave&quot;: 5, &quot;Shadow Silk&quot;: 5, &quot;Heavy Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Shadoweave Gloves</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="shadoweave mask" data-mats="{&quot;Bolt of Mageweave&quot;: 2, &quot;Shadow Silk&quot;: 8, &quot;Heavy Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Shadoweave Mask</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="simple linen pants" data-mats="{&quot;Bolt of Linen Cloth&quot;: 1, &quot;Coarse Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Simple Linen Pants</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="small silk pack" data-mats="{&quot;Heavy Leather&quot;: 2, &quot;Fine Thread&quot;: 3, &quot;Bolt of Silk Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Small Silk Pack</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="spider belt" data-mats="{&quot;Iron Buckle&quot;: 1, &quot;Thick Spider&#x27;s Silk&quot;: 2, &quot;Bolt of Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Spider Belt</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="spidersilk boots" data-mats="{&quot;Medium Leather&quot;: 4, &quot;Iridescent Pearl&quot;: 1, &quot;Spider&#x27;s Silk&quot;: 4, &quot;Bolt of Silk Cloth&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Spidersilk Boots</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="truefaith gloves" data-mats="{&quot;Healing Potion&quot;: 4, &quot;Heavy Leather&quot;: 2, &quot;Fine Thread&quot;: 1, &quot;Bolt of Silk Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Truefaith Gloves</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="white linen shirt" data-mats="{&quot;Bleach&quot;: 1, &quot;Coarse Thread&quot;: 1, &quot;Bolt of Linen Cloth&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">White Linen Shirt</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="white woolen dress" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Bleach&quot;: 4, &quot;Fine Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">White Woolen Dress</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="woolen bag" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Fine Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Woolen Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="woolen boots" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 4, &quot;Light Leather&quot;: 2, &quot;Fine Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Woolen Boots</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="woolen cape" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 1, &quot;Fine Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Woolen Cape</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="woolen reagent bag" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Fine Thread&quot;: 1, &quot;Cerulean Dye&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">Woolen Reagent Bag</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 2, &quot;Truesilver Bar&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Red Dye&quot;: 1, &quot;Coarse Thread&quot;: 1, &quot;Bolt of Linen Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Silk Cloth&quot;: 5, &quot;Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Rugged Leather&quot;: 2, &quot;Viridian Dye&quot;: 1, &quot;Rune Thread&quot;: 1, &quot;Bolt of Runecloth&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Large Glimmering Shard&quot;: 1, &quot;Lesser Astral Essence&quot;: 1, &quot;Soul Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Heavy Leather&quot;: 2, &quot;Fine Thread&quot;: 3, &quot;Bolt of Silk Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 4, &quot;Heavy Silken Thread&quot;: 2, &quot;Bolt of Mageweave&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Linen Cloth&quot;: 8, &quot;Minor Mana Potion&quot;: 2, &quot;Fine Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Felcloth&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Cerulean Dye&quot;: 4, &quot;Large Glimmering Shard&quot;: 6, &quot;Soul Dust&quot;: 8, &quot;Sulfuric Acid&quot;: 4, &quot;Greater Astral Essence&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Linen Cloth&quot;: 3, &quot;Green Dye&quot;: 1, &quot;Coarse Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Chunk of Boar Meat&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Red Dye&quot;: 1, &quot;Fine Thread&quot;: 1, &quot;Bolt of Linen Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Mageweave Cloth&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Linen Cloth&quot;: 1, &quot;Coarse Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Lesser Magic Essence&quot;: 1, &quot;Strange Dust&quot;: 1, &quot;Small Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Lesser Mystic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Simple Wood&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Linen Cloth&quot;: 2, &quot;Coarse Thread&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Fine Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Mageweave&quot;: 4, &quot;Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Mild Spices&quot;: 4, &quot;Raptor Egg&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Cerulean Dye&quot;: 4, &quot;Magenta Dye&quot;: 4, &quot;Large Radiant Shard&quot;: 3, &quot;Dream Dust&quot;: 8, &quot;Greater Nether Essence&quot;: 5}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Linen Cloth&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Linen Cloth&quot;: 1, &quot;Coarse Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 1, &quot;Small Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 1, &quot;Lesser Magic Essence&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Linen Cloth&quot;: 1, &quot;Coarse Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Rosecap&quot;: 4, &quot;Large Radiant Shard&quot;: 5, &quot;Pyrite&quot;: 4, &quot;Greater Nether Essence&quot;: 3, &quot;Dream Dust&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">5</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 2, &quot;Lesser Astral Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Cerulean Dye&quot;: 2, &quot;Bolt of Silk Cloth&quot;: 8, &quot;Fine Thread&quot;: 4, &quot;Pristine Leather&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Blue Dye&quot;: 2, &quot;Fine Thread&quot;: 3, &quot;Bolt of Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 4, &quot;Light Leather&quot;: 2, &quot;Fine Thread&quot;: 1, &quot;Red Dye&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Linen Cloth&quot;: 3, &quot;Coarse Thread&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Vision Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Healing Potion&quot;: 4, &quot;Heavy Leather&quot;: 2, &quot;Fine Thread&quot;: 1, &quot;Bolt of Silk Cloth&quot;: 3}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Mageweave&quot;: 4, &quot;Magenta Dye&quot;: 1, &quot;Heavy Silken Thread&quot;: 2, &quot;Cerulean Dye&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Soul Dust&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Silk Cloth&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bleach&quot;: 1, &quot;Coarse Thread&quot;: 1, &quot;Bolt of Linen Cloth&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Woolen Cloth&quot;: 3, &quot;Bleach&quot;: 4, &quot;Fine Thread&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Soul Dust&quot;: 1, &quot;Large Glimmering Shard&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Bolt of Mageweave&quot;: 2, &quot;Heavy Silken Thread&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Simple Wood&quot;: 1, &quot;Lesser Magic Essence&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">2</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Strange Dust&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Linen Cloth&quot;: 2}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">1</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Shadowgem&quot;: 1, &quot;Silver Rod&quot;: 1, &quot;Strange Dust&quot;: 3, &quot;Lesser Magic Essence&quot;: 4}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">4</td>
+          <td class="muted">scanned</td>
+        </tr>
+        <tr data-prof="Tailoring" data-name="materials" data-mats="{&quot;Dream Dust&quot;: 1, &quot;Small Radiant Shard&quot;: 1, &quot;Potion of Demon Slaying&quot;: 1}">
+          <td class="name"><a href="#" class="recipe-link" onclick="showMats(this); return false;">materials</a></td>
+          <td class="prof">Tailoring</td>
+          <td class="num">3</td>
+          <td class="muted">scanned</td>
+        </tr>
+    </tbody>
+  </table>
+
+  <!-- Materials Modal -->
+  <div id="mats-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:20px; max-width:420px; width:90%; max-height:80vh; overflow:auto;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 id="mats-title" style="margin:0; font-size:16px;"></h3>
+        <button onclick="closeMats()" style="background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer;">×</button>
+      </div>
+      <div id="mats-body"></div>
+    </div>
+  </div>
+
+<script>
+function showMats(el) {
+  const tr = el.closest('tr');
+  const name = el.textContent.replace(/\s*\(×\d+\).*/, '').trim();
+  let mats = {};
+  try { mats = JSON.parse(tr.dataset.mats || '{}'); } catch(e) { console.error(e); }
+  document.getElementById('mats-title').textContent = name;
+  const body = document.getElementById('mats-body');
+  if (!Object.keys(mats).length) {
+    body.innerHTML = '<p class="muted">No materials listed.</p>';
+  } else {
+    body.innerHTML = '<ul style="margin:0; padding-left:18px; line-height:1.6;">' +
+      Object.entries(mats).map(([m, q]) => `<li>${m} <b>×${q}</b></li>`).join('') +
+      '</ul>';
+  }
+  document.getElementById('mats-modal').style.display = 'flex';
+}
+
+function closeMats() {
+  document.getElementById('mats-modal').style.display = 'none';
+}
+
+function filter() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const prof = document.getElementById('prof').value;
+  document.querySelectorAll('#tbl tbody tr').forEach(tr => {
+    const name = tr.dataset.name || '';
+    const show = (!q || name.includes(q)) && (!prof || tr.dataset.prof === prof);
+    tr.style.display = show ? '' : 'none';
+  });
+}
+
+let sortDir = {};
+function sortCol(idx) {
+  const tbody = document.querySelector('#tbl tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  sortDir[idx] = !sortDir[idx];
+  rows.sort((a, b) => {
+    let av = a.cells[idx].textContent, bv = b.cells[idx].textContent;
+    if (idx === 2) {
+      av = parseInt(av) || 0; bv = parseInt(bv) || 0;
+      return sortDir[idx] ? av - bv : bv - av;
+    }
+    return sortDir[idx] ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+document.getElementById('mats-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeMats();
+});
+filter();
+</script>
+</body>
+</html>
